@@ -7,6 +7,9 @@ Lucimoo consists of two add-ons for the Moodle book module:
 
 *   The "exportepub" add-on provides functionality to export
     book module books as EPUB ebooks.
+    This version of the exportepub plugin has been modified
+    to generate Brightspace-compatible HTML.
+
 
 
 ## Requirements
