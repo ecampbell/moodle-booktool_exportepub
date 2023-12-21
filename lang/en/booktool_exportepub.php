@@ -28,3 +28,4 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'Lucimoo ebook export';
 $string['exportepub:export'] = 'Export ebook';
 $string['downloadepub'] = 'Download as ebook';
+$string['downloadzip'] = 'Download as zip';

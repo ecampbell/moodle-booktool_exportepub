@@ -88,6 +88,8 @@ class match_saver {
 // Create EPUB
 $modified = $book->timemodified;
 $booktitle = format_string($book->name, true, array('context' => $context));
+// Get outname now so we can prefix it to external file paths.
+$outname = preg_replace('~[/\\\'":?*& ]~', '_', $booktitle);
 $epub = new LuciEPUB();
 $epub->set_title($booktitle);
 $epub->set_uid();
@@ -134,7 +136,8 @@ foreach ($chapters as $cid => $ch) {
     $title = book_get_chapter_title($ch->id, $chapters, $book, $context);
 
     $text = '';
-    $text .= "<div id='ch" . $ch->id . "'>\n";
+    // Set the page width using the Bootstrap 12-column grid convention, with a 1-column indent.
+    $text .= "<div id='ch" . $ch->id . "' class='col-xs-12 col-sm-offset-1 col-sm-10'>\n";
     if (!$book->customtitles) {
         if ($chapter->subchapter) {
             $text .= '<h3 class="book_chapter_title">' . $title . "</h3>\n";
@@ -165,6 +168,16 @@ foreach ($chapters as $cid => $ch) {
                          array('noclean' => true, 'context' => $context));
     $text .= '</div>';
 
+    // Prefix audio and video paths with the Zip file name, and add a type folder too.
+    $text = preg_replace('~(<source [^>]*?)src=([\'"])(.+?)mp3[\'"]~', '\1src="' . $outname . '/audios/' . '\3mp3"', $text);
+    $text = preg_replace('~(<source [^>]*?)src=([\'"])(.+?)(mp4|mpg|ogm|ogv)[\'"]~', '\1src="' . $outname . '/videos/' . '\3\4"', $text);
+    // Prefix image paths with the Zip file name only, as Lucimoo already adds the "images" type folder name.
+    $text = preg_replace('~(<img [^>]*?)src=([\'"])(.+?)[\'"]~', '\1src="' . $outname . '/\3"', $text);
+    // Promote headings to suit pre-defined Brightspace styling.
+    $promotefrom = array('<h3', '</h3', '<h4', '</h4', '<h5', '</h5', '<h6', '</h6');
+    $promoteto = array('<h1', '</h1', '<h2', '</h2', '<h3', '</h3', '<h4', '</h4');
+    $text = str_replace($promotefrom, $promoteto, $text);
+
     if ($ebooksettings['embedNonlocalFiles']) {
         try {
             $doc = new DOMDocument();
@@ -177,7 +190,7 @@ foreach ($chapters as $cid => $ch) {
         }
     }
 
-    $epub->add_spine_item($epub->get_html_wrap($text, $title, FALSE, 'content layout-2', "xmlns:epub='http://www.idpf.org/2007/ops'"),
+    $epub->add_spine_item($epub->get_html_wrap($text, $title, '', FALSE, "xmlns:epub='http://www.idpf.org/2007/ops'"),
                           'chap' . $ch->id . '.html');
     $epub->set_item_toc(null, true, !$first);
     $first = false;
@@ -192,7 +205,6 @@ foreach ($chapters as $cid => $ch) {
 $epub->generate_nav('luci.css', true);
 
 // Send EPUB
-$outname = preg_replace('~[/\\\'":?*& ]~', '_', $booktitle);
 $out = $epub->generate();
-$out->sendZip(@utf8_decode($outname) . '.epub', 'application/epub+zip',
-              $outname . '.epub', true);
+// For user simplicity, save the ePub with a .zip suffix, not .epub.
+$out->sendZip(@utf8_decode($outname) . '.zip', 'application/zip', $outname . '.zip', true);

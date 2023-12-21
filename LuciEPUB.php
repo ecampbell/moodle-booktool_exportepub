@@ -790,23 +790,32 @@ class LuciEPUB {
 	if ($style)
 	    $text .= "<link href='" . self::escape($style) .
 		"' rel='stylesheet' type='text/css'/>\n";
-	$text .= '<link rel="stylesheet" ' .
-		'href="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/bootstrap-3.3.6/css/bootstrap.min.css"/>' .
-		'<link rel="stylesheet" ' .
-		'href="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/css/main.min.css"/>';
-	$text .= "</head>\n";
-
-	if ($bodyclass) {
-	    $text .= '<body class="' . $bodyclass . '" role="document">' . "\n";
-	    $text .= '<div class="container-fluid"><main><div class="row"><div class="col-xs-12 col-sm-offset-2 col-sm-8">';
+	else {
+        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/bootstrap-3.3.6/css/bootstrap.min.css"/>';
+        // Styles for Carousel copied from CreatorPlus.
+        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/styles.min.css"/>';
+        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/main.min.css"/>';
+        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/custom.css"/>';
 	}
+	$text .= "</head>\n";
+	if ($bodyclass)
+	    $text .= "<body class='" . $bodyclass . "'>\n";
 	else
 	    $text .= "<body>\n";
 	return $text;
     }
 
     public static function get_html_end() {
-	return "</body>\n</html>";
+	return '<!-- jQuery local fallback (Bootstrap Dependency) -->
+<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/jquery/jquery-1.11.3.min.js"></script></p>
+<!-- Bootstrap CDN JS -->
+<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/bootstrap-3.3.6/js/bootstrap.min.js"></script></p>
+<!-- SVG Fallback JS -->
+<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script></p>
+<!-- Course Scripts -->
+<p><script src="HTML-Template-Library/Daylight_2020/assets/js/main.min.js"></script></p>
+<!-- CreatorPlus scripts used by Carousel -->
+<p><script src="HTML-Template-Library/Daylight_2020/assets/js/scripts.min.js"></script></p>' . "</body>\n</html>";
     }
 
     public static function get_html_wrap($content, $title, $style = FALSE, $bodyclass = FALSE, $namespaces = '') {

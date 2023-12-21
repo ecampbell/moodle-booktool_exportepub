@@ -49,7 +49,7 @@ function booktool_exportepub_extend_settings_navigation(settings_navigation $set
         has_capability('mod/book:read', $PAGE->cm->context)) {
         $url = new moodle_url('/mod/book/tool/exportepub/index.php',
                               array('id' => $params['id']));
-        $booknode->add(get_string('downloadepub', 'booktool_exportepub'),
+        $booknode->add(get_string('downloadzip', 'booktool_exportepub'),
                        $url, navigation_node::TYPE_SETTING, null, null, null);
     }
 }
