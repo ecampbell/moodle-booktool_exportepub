@@ -791,31 +791,36 @@ class LuciEPUB {
 	    $text .= "<link href='" . self::escape($style) .
 		"' rel='stylesheet' type='text/css'/>\n";
 	else {
-        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/bootstrap-3.3.6/css/bootstrap.min.css"/>';
+        $text .= '<!-- Bootstrap CDN CSS -->
+<link rel="stylesheet" href="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/bootstrap-3.3.6/css/bootstrap.min.css"/>';
         // Styles for Carousel copied from CreatorPlus.
         $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/styles.min.css"/>';
-        $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/main.min.css"/>';
+        $text .= '<!-- Course Styles -->
+
+<link rel="stylesheet" href="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/css/main.min.css"/>';
         $text .= '<link rel="stylesheet" href="HTML-Template-Library/Daylight_2020/assets/css/custom.css"/>';
 	}
 	$text .= "</head>\n";
 	if ($bodyclass)
 	    $text .= "<body class='" . $bodyclass . "'>\n";
 	else
-	    $text .= "<body>\n";
+	    $text .= "<body style='overflow-y: visible'>\n";
+    // Specify a Bootstrap container and use the 12-column grid convention.
+    $text .= '<div class="container-fluid"><main><div class="row">';
 	return $text;
     }
 
     public static function get_html_end() {
-	return '<!-- jQuery local fallback (Bootstrap Dependency) -->
-<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/jquery/jquery-1.11.3.min.js"></script></p>
+	return '</div></main></div><!-- jQuery local fallback (Bootstrap Dependency) -->
+<script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/jquery/jquery-1.11.3.min.js"></script>
 <!-- Bootstrap CDN JS -->
-<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/bootstrap-3.3.6/js/bootstrap.min.js"></script></p>
+<script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/bootstrap-3.3.6/js/bootstrap.min.js"></script>
 <!-- SVG Fallback JS -->
-<p><script src="HTML-Template-Library/Daylight_2020/assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script></p>
+<script src="shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script>
 <!-- Course Scripts -->
-<p><script src="HTML-Template-Library/Daylight_2020/assets/js/main.min.js"></script></p>
+<script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/js/main.min.js"></script>
 <!-- CreatorPlus scripts used by Carousel -->
-<p><script src="HTML-Template-Library/Daylight_2020/assets/js/scripts.min.js"></script></p>' . "</body>\n</html>";
+<script src="HTML-Template-Library/Daylight_2020/assets/js/scripts.min.js"></script>' . "</body>\n</html>";
     }
 
     public static function get_html_wrap($content, $title, $style = FALSE, $bodyclass = FALSE, $namespaces = '') {

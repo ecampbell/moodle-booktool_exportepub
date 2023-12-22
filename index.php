@@ -140,9 +140,9 @@ foreach ($chapters as $cid => $ch) {
     $text .= "<div id='ch" . $ch->id . "' class='col-xs-12 col-sm-offset-1 col-sm-10'>\n";
     if (!$book->customtitles) {
         if ($chapter->subchapter) {
-            $text .= '<h3 class="book_chapter_title">' . $title . "</h3>\n";
+            $text .= '<h1 class="book_chapter_title">' . $title . "</h1>\n";
         } else {
-            $text .= '<h2 class="book_chapter_title">' . $title . "</h2>\n";
+            $text .= '<h1 class="book_chapter_title">' . $title . "</h1>\n";
         }
     }
 
@@ -190,7 +190,7 @@ foreach ($chapters as $cid => $ch) {
         }
     }
 
-    $epub->add_spine_item($epub->get_html_wrap($text, $title, '', FALSE, "xmlns:epub='http://www.idpf.org/2007/ops'"),
+    $epub->add_spine_item($epub->get_html_wrap($text, $title, '', FALSE, ""),
                           'chap' . $ch->id . '.html');
     $epub->set_item_toc(null, true, !$first);
     $first = false;
