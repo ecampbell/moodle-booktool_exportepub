@@ -816,9 +816,9 @@ class LuciEPUB {
 <!-- Bootstrap CDN JS -->
 <script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/bootstrap-3.3.6/js/bootstrap.min.js"></script>
 <!-- SVG Fallback JS -->
-<script src="shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script>
+<script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script>
 <!-- Course Scripts -->
-<script src="/shared/HTML-Template-Library/Daylight_HTML_Template/module_templates/../assets/js/main.min.js"></script>
+<script src="HTML-Template-Library/Daylight_2020/assets/js/main.min.js"></script>
 <!-- CreatorPlus scripts used by Carousel -->
 <script src="HTML-Template-Library/Daylight_2020/assets/js/scripts.min.js"></script>' . "</body>\n</html>";
     }
