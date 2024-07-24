@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2023122200;
+$plugin->version = 2024072403;
 $plugin->requires = 2012062500;
 $plugin->component = 'booktool_exportepub';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '0.20 (Build: 202312200)';
+$plugin->release = '0.22 (Build: 2024072403)';

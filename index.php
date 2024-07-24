@@ -168,9 +168,10 @@ foreach ($chapters as $cid => $ch) {
                          array('noclean' => true, 'context' => $context));
     $text .= '</div>';
 
-    // Prefix audio and video paths with the Zip file name, and add a type folder too.
-    $text = preg_replace('~(<source [^>]*?)src=([\'"])(.+?)mp3[\'"]~', '\1src="' . $outname . '/audios/' . '\3mp3"', $text);
-    $text = preg_replace('~(<source [^>]*?)src=([\'"])(.+?)(mp4|mpg|ogm|ogv)[\'"]~', '\1src="' . $outname . '/videos/' . '\3\4"', $text);
+    // Prefix PDF or Word file, audio and video paths with the Zip file name, the path is local/relative.
+    $text = preg_replace('~(<a [^>]*?)href=([\'"]Readings)(.+?)(pdf|docx)[\'"]~', '\1href="' . $outname . '/Readings\3\4"', $text);
+    $text = preg_replace('~(<source [^>]*?)src=([\'"]Audios)(.+?)mp3[\'"]~', '\1src="' . $outname . '/Audios\3mp3"', $text);
+    $text = preg_replace('~(<source [^>]*?)src=([\'"]Videos)(.+?)(mp4|mpg|ogm|ogv)[\'"]~', '\1src="' . $outname . '/Videos\3\4"', $text);
     // Prefix image paths with the Zip file name only, as Lucimoo already adds the "images" type folder name.
     $text = preg_replace('~(<img [^>]*?)src=([\'"])(.+?)[\'"]~', '\1src="' . $outname . '/\3"', $text);
     // Promote headings to suit pre-defined Brightspace styling.
