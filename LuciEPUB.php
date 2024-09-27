@@ -444,8 +444,6 @@ class LuciEPUB {
 	    if (!$ol->hasChildNodes())
 		$ol->parentNode->removeChild($ol);
 	}
-
-	$this->set_nav($doc->saveXML());
     }
 
     protected function head_callback($matches) {
@@ -470,101 +468,6 @@ class LuciEPUB {
 	return $ret;
     }
 
-    public function get_opf() {
-	$text = "<?xml version='1.0'?>\n" .
-	    "<package version='3.0' xmlns='http://www.idpf.org/2007/opf' unique-identifier='pub-id'>\n";
-
-	$text .= "<metadata xmlns:dc='http://purl.org/dc/elements/1.1/'>\n";
-	if ($this->uid)	// Required
-	    $text .= "  <dc:identifier id='pub-id'>" . $this->uid . "</dc:identifier>\n";
-
-	// TODO Handle different types
-	foreach ($this->ids as $id) {
-	    $text .= "  <dc:identifier>" . $id . "</dc:identifier>\n";
-	}
-
-	$text .= "  <dc:title>" . $this->title . "</dc:title>\n"; // Required
-
-	foreach ($this->languages as $lang)
-	    $text .= "  <dc:language>" . $lang . "</dc:language>\n";
-
-	foreach ($this->creators as $creator) {
-	    $id = $this->generate_id();
-	    $text .= "  <dc:creator id='" . $id . "'>" . $creator['name'] .
-		"</dc:creator>\n";
-	    if ($creator['role'])
-		$text .= "  <meta refines='#" . $id .
-		    "' property='role' scheme='marc:relators'>" .
-		    $creator['role'] . "</meta>\n";
-	    if ($creator['file-as'])
-		$text .= "  <meta refines='#" . $id .
-		    "' property='file-as' scheme='marc:relators'>" .
-		    $creator['file-as'] . "</meta>\n";
-	    if ($creator['display-seq'])
-		$text .= "  <meta refines='#" . $id .
-		    "' property='display-seq' scheme='marc:relators'>" .
-		    $creator['display-seq'] . "</meta>\n";
-	}
-
-	if ($this->publisher)
-	    $text .= "  <dc:publisher>" . $this->publisher . "</dc:publisher>\n";
-
-	if ($this->rights)
-	    $text .= "  <dc:rights>" . $this->rights . "</dc:rights>\n";
-
-	if ($this->description)
-	    $text .= "  <dc:description>" . $this->description . "</dc:description>\n";
-
-	if ($this->date)
-	    $text .= "  <dc:date>" . $this->date . "</dc:date>\n";
-
-	// TODO dc:contributor
-
-	// TODO dc:coverage
-
-	// TODO dc:format
-
-	// TODO dc:relation
-
-	if ($this->source) {
-	    $text .= "  <dc:source id='src-id'>" . $this->source[0] .
-		"</dc:source>\n";
-	    if ($this->source[1] == 'isbn')
-		$text .= "  <meta refines='#src-id' property='identifier-type' scheme='onix:codelist5'>15</meta>\n";
-	}
-	// TODO dc:subject
-	// TODO dc:type
-
-	if ($this->modified)	// Required
-	    $text .= "  <meta property='dcterms:modified'>" . $this->modified . "</meta>\n";
-	// TODO dcterms:date
-
-	$text .= "</metadata>\n";
-
-	$text .= "<manifest>\n";
-	foreach ($this->items as $item) {
-	    $text .= "  <item id='" . $item['id'] .
-	    "' href='content/" . $item['href'] .
-	    "' media-type='" . $item['type'] . "'";
-	    if ($item['fallback'])
-		$text .= " fallback='" . $item['fallback'] . "'";
-	    if ($item['properties'])
-		$text .= " properties='" . $item['properties'] . "'";
-	    $text .= "/>\n";
-	}
-	$text .= "</manifest>\n";
-
-	$text .= "<spine>\n";
-	foreach ($this->items as $item) {
-	    if ($item['spine'])
-		$text .= "  <itemref idref='" . $item['id'] . "'/>\n";
-	}
-	$text .= "</spine>\n";
-	$text .= "</package>";
-
-	return $text;
-    }
-
     public function check() {
 	if (!$this->uid)
 	    $this->set_uid();
@@ -584,11 +487,6 @@ class LuciEPUB {
 	    if ($item['toc'])
 		$has_toc = TRUE;
 	}
-	if (!$has_toc) {
-	    foreach ($this->items as $item)
-		if ($item['spine'])
-		    $item['toc'] = 'Start';
-	}
 	if (!$has_nav)
 	    $this->generate_nav();
     }
@@ -600,32 +498,22 @@ class LuciEPUB {
 	// Generate
 	$zip = new LuciZip();
 	$zip->setExtraField(FALSE);
-	$zip->addFile('application/epub+zip', 'mimetype');
-
-	$text = "<?xml version='1.0'?>\n" .
-	    "<container version='1.0' xmlns='urn:oasis:names:tc:opendocument:xmlns:container'>\n" .
-	    "  <rootfiles>\n" .
-	    "    <rootfile full-path='OPS/luci.opf' media-type='application/oebps-package+xml'/>\n" .
-	    "  </rootfiles>\n" .
-	    "</container>";
-	$zip->addFile($text, 'META-INF/container.xml');
-
-	$zip->addFile($this->get_opf(), 'OPS/luci.opf');
-
+        $dirPath = './';  // For ePub, this would be 'OPS/content/'.
+    
 	foreach ($this->items as $item) {
 	    if ($item['data']) {
-		$zip->addFile($item['data'], 'OPS/content/' . $item['href']);
+		$zip->addFile($item['data'], $dirpath . $item['href']);
 	    } elseif ($item['file']) {
 		$data = '';
 		while (!feof($item['file'])) {
 		    $data .= fread($item['file'], 8192);
 		}
 		fclose($item['file']);
-		$zip->addFile($data, 'OPS/content/' . $item['href']);
+		$zip->addFile($data, $dirpath . $item['href']);
 		unset($data);
 	    } elseif ($item['filepath']) {
 		$zip->addFile(file_get_contents($item['filepath']),
-			      'OPS/content/' . $item['href']);
+			      $dirpath . $item['href']);
 	    }
 	}
 

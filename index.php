@@ -98,30 +98,6 @@ if ($CFG->lang) {
     $epub->add_language($CFG->lang);
 }
 
-// Set default metadata
-if (isset($ebooksettings['publisher'])) {
-    $epub->set_publisher($ebooksettings['publisher']);
-}
-if (isset($ebooksettings['rights'])) {
-    $epub->set_rights($ebooksettings['rights']);
-}
-
-// Add stylesheet and cover
-$epub->add_item_filepath(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'luci.css',
-                         'text/css', 'luci.css');
-$epub->add_spine_item($epub->get_html_cover($booktitle, null, null, null,
-                                            'luci.css'), 'cover.html');
-
-// Add description text
-if ($ebooksettings['includeDescription']) {
-    $text = format_text($book->intro, $book->introformat,
-                        array('noclean' => true, 'context' => $context));
-    $epub->add_spine_item($epub->get_html_wrap($book->intro,
-                                               get_string('summary'),
-                                               'luci.css'), 'intro.html');
-    $epub->set_item_toc(get_string('summary'));
-}
-
 // Add chapters
 $chapters = book_preload_chapters($book);
 $allchapters = $DB->get_records('book_chapters', array('bookid' => $book->id),
@@ -200,10 +176,6 @@ foreach ($chapters as $cid => $ch) {
         $modified = $chapter->timemodified;
     }
 }
-
-// Note: $chapter->timemodified is not updated when a chapter is edited
-// $epub->set_modified(@gmdate('Y-m-d\TH:i:s', $modified) . 'Z');
-$epub->generate_nav('luci.css', true);
 
 // Send EPUB
 $out = $epub->generate();
